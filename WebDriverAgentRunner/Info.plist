@@ -26,5 +26,9 @@
 	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<!-- Aion patch (2026-08-19): iOS 14+ 本地网络权限——没有此声明时 app 的非回环
+	     入站连接被系统静默拒绝（v4 回环 USB 通道不受影响，v6 隧道通道被挡）。 -->
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Aion 用于无线采样 iPhone 前台应用（WDA 眼睛）。</string>
 </dict>
 </plist>
