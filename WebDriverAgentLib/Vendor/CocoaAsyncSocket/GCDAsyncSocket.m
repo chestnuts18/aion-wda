@@ -1684,6 +1684,15 @@ static dispatch_queue_t cfstreamThreadSetupQueue; // setup & teardown
 
       self->socket6FD = createSocket(AF_INET6, interface6);
 
+      // Aion patch (2026-08-19): 显式双栈（IPV6_V6ONLY=0）——v6 socket 同时收
+      // IPv4 映射流量；并输出诊断日志进设备日志（idevicesyslog 可抓），
+      // 定位无线隧道「设备 8100 无 v6 监听」问题。
+      if (self->socket6FD != SOCKET_NULL) {
+        int v6only = 0;
+        setsockopt(self->socket6FD, IPPROTO_IPV6, IPV6_V6ONLY, &v6only, sizeof(v6only));
+      }
+      NSLog(@"[AionWDA] accept sockets: v4FD=%d v6FD=%d", self->socket4FD, self->socket6FD);
+
       if (self->socket6FD == SOCKET_NULL)
       {
         if (self->socket4FD != SOCKET_NULL)
