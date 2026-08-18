@@ -1,0 +1,35 @@
+name: WdaBuild
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build WDA runner (unsigned)
+        run: |
+          xcodebuild build-for-testing \
+            -project WebDriverAgent.xcodeproj \
+            -scheme WebDriverAgentRunner \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            PRODUCT_BUNDLE_IDENTIFIER=com.chestnuts.aionios.wda.xctrunner
+          echo "=== products ==="
+          ls -la build/Build/Products/Debug-iphoneos/
+
+      - name: Package runner app
+        run: |
+          cd build/Build/Products/Debug-iphoneos
+          ditto -c -k --keepParent WebDriverAgentRunner-Runner.app WebDriverAgentRunner-Runner.zip
+          ls -la
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wda-runner-unsigned
+          path: build/Build/Products/Debug-iphoneos/WebDriverAgentRunner-Runner.zip
+          retention-days: 30
