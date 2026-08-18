@@ -10,6 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Fix script permissions (Windows checkout drops +x)
+        run: chmod +x Scripts/*.sh
+
       - name: Build WDA runner (unsigned)
         run: |
           xcodebuild build-for-testing \
