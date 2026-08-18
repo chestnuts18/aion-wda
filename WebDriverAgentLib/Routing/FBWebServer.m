@@ -89,7 +89,8 @@ static NSString *const FBServerURLEndMarker = @"<-ServerURLHere";
   // Aion patch (2026-08-19): iOS 17+ XCTest automation 会话期间 SpringBoard 会把
   // 屏幕亮度压暗（触摸才恢复），影响念宝正常使用。周期检测：亮度被压到 0.6 以下
   // 就设回 0.75；用户手动调高（>0.6）不受影响。
-  [NSTimer scheduledTimerWithTimeInterval:5.0 repeats:YES block:^(NSTimer *timer) {
+  // 1s 周期（念宝拍板）：变暗瞬间拉回，效果≈一直不暗。
+  [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer *timer) {
     CGFloat cur = [UIScreen mainScreen].brightness;
     if (cur < 0.6) {
       [UIScreen mainScreen].brightness = 0.75;
